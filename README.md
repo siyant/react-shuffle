@@ -20,10 +20,10 @@ Simply wrap child components with this component and dynamically change them to 
 
 | Prop | PropType | Description |
 | ---- | -------- | ----------- |
-| duration | React.PropTypes.number | Duration of animation |
-| fade | React.PropTypes.bool | Should children fade on enter/leave |
-| scale | React.PropTypes.bool | Should children scale on enter/leave |
-| intial | React.PropTypes.bool | Should scale/fade occur on first load |
+| duration | PropTypes.number | Duration of animation |
+| fade | PropTypes.bool | Should children fade on enter/leave |
+| scale | PropTypes.bool | Should children scale on enter/leave |
+| intial | PropTypes.bool | Should scale/fade occur on first load |
 
 ###Example
 ```javascript

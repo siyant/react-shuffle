@@ -6,9 +6,10 @@ import ReactDom from 'react-dom';
 import assign from 'object-assign';
 import tweenState from 'react-tween-state';
 import ReactTransitionGroup from 'react-addons-transition-group';
+import PropTypes from 'prop-types';
 
-const Clones = React.createClass({
-  displayName: 'ShuffleClones',
+class Clones extends React.Component {
+  displayName: 'ShuffleClones';
 
   _childrenWithPositions() {
     let children = [];
@@ -27,7 +28,7 @@ const Clones = React.createClass({
     return children.sort((a, b) =>
       (a.key < b.key) ? -1 : (a.key > b.key) ? 1 : 0
     );
-  },
+  }
 
   render() {
     return (
@@ -38,11 +39,11 @@ const Clones = React.createClass({
       </div>
     );
   }
-});
+};
 
-const Clone = React.createClass({
-  mixins: [tweenState.Mixin],
-  displayName: 'ShuffleClone',
+class Clone extends React.Component {
+  mixins: [tweenState.Mixin];
+  displayName: 'ShuffleClone';
   getInitialState() {
     return {
       top: this.props.style ? this.props.style.top : 0,
@@ -50,7 +51,7 @@ const Clone = React.createClass({
       opacity: 1,
       transform: 1
     }
-  },
+  }
   componentWillAppear(cb) {
     this.tweenState('opacity', {
       easing: tweenState.easingTypes.easeOutSine,
@@ -59,7 +60,7 @@ const Clone = React.createClass({
       endValue: 1,
       onEnd: cb
     });
-  },
+  }
   componentWillEnter(cb) {
     this.tweenState('opacity', {
       easing: tweenState.easingTypes.easeOutSine,
@@ -68,7 +69,7 @@ const Clone = React.createClass({
       endValue: 1,
       onEnd: cb
     });
-  },
+  }
   componentWillLeave(cb) {
     this.tweenState('opacity', {
       easing: tweenState.easingTypes.easeOutSine,
@@ -82,7 +83,7 @@ const Clone = React.createClass({
         }
       }
     });
-  },
+  }
   componentWillReceiveProps(nextProps) {
     this.tweenState('top', {
       easing: tweenState.easingTypes.easeOutSine,
@@ -94,7 +95,7 @@ const Clone = React.createClass({
       duration: nextProps.duration,
       endValue: nextProps.style.left
     });
-  },
+  }
   render() {
     let style = {};
     if (this.props.style) {
@@ -114,18 +115,18 @@ const Clone = React.createClass({
       React.cloneElement(this.props.child, {style, key})
     )
   }
-})
+};
 
-const Shuffle = React.createClass({
+class Shuffle extends React.Component {
 
-  displayName: 'Shuffle',
+  displayName: 'Shuffle';
 
   propTypes: {
-    duration: React.PropTypes.number,
-    scale: React.PropTypes.bool,
-    fade: React.PropTypes.bool,
-    initial: React.PropTypes.bool
-  },
+    duration: PropTypes.number,
+    scale: PropTypes.bool,
+    fade: PropTypes.bool,
+    initial: PropTypes.bool
+  }
 
   getDefaultProps() {
     return {
@@ -134,29 +135,29 @@ const Shuffle = React.createClass({
       fade: true,
       initial: false
     }
-  },
+  }
 
   getInitialState() {
     return {
       animating: false,
       ready: false
     };
-  },
+  }
 
   componentDidMount() {
     this._makePortal();
     window.addEventListener('resize', this._renderClonesInitially);
-  },
+  }
 
   componentWillUnmount() {
     ReactDom.unmountComponentAtNode(this._portalNode);
     ReactDom.findDOMNode(this.refs.container).removeChild(this._portalNode);
     window.removeEventListener('resize', this._renderClonesInitially);
-  },
+  }
 
   componentWillReceiveProps(nextProps) {
     this._startAnimation(nextProps);
-  },
+  }
 
   componentDidUpdate(prevProps) {
     if (this.state.ready === false) {
@@ -166,7 +167,7 @@ const Shuffle = React.createClass({
     } else {
       this._renderClonesToNewPositions(this.props);
     }
-  },
+  }
 
   _makePortal() {
     this._portalNode = document.createElement('div');
@@ -174,11 +175,11 @@ const Shuffle = React.createClass({
     this._portalNode.style.top = '0px';
     this._portalNode.style.position = 'absolute';
     ReactDom.findDOMNode(this.refs.container).appendChild(this._portalNode);
-  },
+  }
 
   _addTransitionEndEvent() {
     setTimeout(this._finishAnimation, this.props.duration);
-  },
+  }
 
   _startAnimation(nextProps) {
     if (this.state.animating) {
@@ -196,7 +197,7 @@ const Shuffle = React.createClass({
       this._addTransitionEndEvent();
       this.setState({animating: true});
     });
-  },
+  }
 
   _renderClonesToNewPositions(props) {
     let cloneProps = assign({}, props, {
@@ -207,11 +208,11 @@ const Shuffle = React.createClass({
       duration: this.props.duration
     });
     this._renderClones(cloneProps);
-  },
+  }
 
   _finishAnimation() {
     this.setState({animating: false});
-  },
+  }
 
   _getPositions() {
     let positions = {};
@@ -233,7 +234,7 @@ const Shuffle = React.createClass({
       positions[ref] = position;
     });
     return positions;
-  },
+  }
 
   _renderClonesInitially() {
     let cloneProps = assign({}, this.props, {
@@ -245,17 +246,17 @@ const Shuffle = React.createClass({
     });
     ReactDom.unstable_renderSubtreeIntoContainer(this, <Clones {...cloneProps}/>, this._portalNode);
     this.setState({ready: true});
-  },
+  }
 
   _renderClones(props, cb) {
     ReactDom.unstable_renderSubtreeIntoContainer(this, <Clones {...props}/>, this._portalNode, cb);
-  },
+  }
 
   _childrenWithRefs() {
     return React.Children.map(this.props.children, (child) =>
       React.cloneElement(child, {ref: child.key})
     );
-  },
+  }
 
   render() {
     let { initial, fade, duration, ...props } = this.props;
@@ -271,6 +272,6 @@ const Shuffle = React.createClass({
       </div>
     );
   }
-});
+};
 
 export default Shuffle;

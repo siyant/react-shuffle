@@ -8,13 +8,14 @@ const alphabet = [
   'a','b','c','d','e','f','g','h','i','j','k','l','m',
   'n','o','p','q','r','s','t','u','v','w','x','y','z']
 
-const App = React.createClass({
-  getInitialState() {
-    return {
+class App extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
       children: alphabet,
       filtered: false
     }
-  },
+  }
   filterChildren() {
     if (this.state.filtered === false) {
       let newChildren = this.state.children.filter(function(child,index){
@@ -32,7 +33,7 @@ const App = React.createClass({
         filtered: false
       });
     }
-  },
+  }
   render() {
     return (
       <div className="demo">
